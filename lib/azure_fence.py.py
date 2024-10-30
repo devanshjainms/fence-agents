@@ -350,8 +350,7 @@ def get_azure_compute_client(config):
 
     cloud_environment = get_azure_cloud_environment(config)
     credentials = get_azure_credentials(config)
-    if PYTHON_VERSION <= (3,8):
-        COMPUTE_CLIENT_API_VERSION = None
+    
 
     if cloud_environment:
         if (config.Cloud.lower() == "stack") and not config.MetadataEndpoint:
@@ -365,14 +364,22 @@ def get_azure_compute_client(config):
             else:
                 client_profile = KnownProfiles.default
                 credential_scope = cloud_environment.endpoints.resource_manager + "/.default"
-            compute_client = ComputeManagementClient(
-                credentials,
-                config.SubscriptionId,
-                base_url=cloud_environment.endpoints.resource_manager,
-                profile=client_profile,
-                credential_scopes=[credential_scope],
-                api_version=COMPUTE_CLIENT_API_VERSION
-            )
+            if PYTHON_VERSION <= (3,8):
+                compute_client = ComputeManagementClient(
+                    credentials,
+                    config.SubscriptionId,
+                    base_url=cloud_environment.endpoints.resource_manager,
+                    profile=client_profile,
+                    credential_scopes=[credential_scope]
+                )
+            else:
+                compute_client = ComputeManagementClient(
+                    credentials,
+                    config.SubscriptionId,
+                    base_url=cloud_environment.endpoints.resource_manager,
+                    profile=client_profile,
+                    credential_scopes=[credential_scope],
+                    api_version=COMPUTE_CLIENT_API_VERSION)
         except TypeError:
             compute_client = ComputeManagementClient(
                 credentials,
