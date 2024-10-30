@@ -350,6 +350,7 @@ def get_azure_compute_client(config):
 
     cloud_environment = get_azure_cloud_environment(config)
     credentials = get_azure_credentials(config)
+    logging.debug("Into the azure compute client")
     
 
     if cloud_environment:
@@ -364,7 +365,10 @@ def get_azure_compute_client(config):
             else:
                 client_profile = KnownProfiles.default
                 credential_scope = cloud_environment.endpoints.resource_manager + "/.default"
-            if PYTHON_VERSION <= (3,8):
+            logging.debug("Into the azure ")
+
+            if PYTHON_VERSION <= (3,10):
+                logging.debug("Into the 3.10")
                 compute_client = ComputeManagementClient(
                     credentials,
                     config.SubscriptionId,
@@ -373,6 +377,7 @@ def get_azure_compute_client(config):
                     credential_scopes=[credential_scope]
                 )
             else:
+                logging.debug("Into the something new")
                 compute_client = ComputeManagementClient(
                     credentials,
                     config.SubscriptionId,
@@ -414,7 +419,7 @@ def get_azure_network_client(config):
             else:
                 client_profile = KnownProfiles.default
                 credential_scope = cloud_environment.endpoints.resource_manager + "/.default"
-            if PYTHON_VERSION <= (3,8):
+            if PYTHON_VERSION <= (3,10):
                 network_client = NetworkManagementClient(
                     credentials,
                     config.SubscriptionId,
