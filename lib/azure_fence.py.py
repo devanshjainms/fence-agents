@@ -346,11 +346,12 @@ def get_azure_credentials(config):
     return credentials
 
 def get_azure_compute_client(config):
+    logging.debug("Into the azure compute client")
     from azure.mgmt.compute import ComputeManagementClient
 
     cloud_environment = get_azure_cloud_environment(config)
     credentials = get_azure_credentials(config)
-    logging.debug("Into the azure compute client")
+    
     
 
     if cloud_environment:
