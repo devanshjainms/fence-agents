@@ -1,4 +1,4 @@
-import logging, re, time
+import logging, re, time, sys
 from fencing import fail_usage
 
 FENCE_SUBNET_NAME = "fence-subnet"
@@ -14,6 +14,7 @@ FENCE_TAG_IP = "FENCE_TAG_IP"
 IP_TYPE_DYNAMIC = "Dynamic"
 MAX_RETRY = 10
 RETRY_WAIT = 5
+PYTHON_VERSION = sys.version_info
 COMPUTE_CLIENT_API_VERSION = "2021-11-01"
 NETWORK_MGMT_CLIENT_API_VERSION = "2021-05-01"
 
@@ -349,6 +350,8 @@ def get_azure_compute_client(config):
 
     cloud_environment = get_azure_cloud_environment(config)
     credentials = get_azure_credentials(config)
+    if PYTHON_VERSION <= (3,8):
+        COMPUTE_CLIENT_API_VERSION = None
 
     if cloud_environment:
         if (config.Cloud.lower() == "stack") and not config.MetadataEndpoint:
@@ -390,7 +393,8 @@ def get_azure_network_client(config):
 
     cloud_environment = get_azure_cloud_environment(config)
     credentials = get_azure_credentials(config)
-
+    if PYTHON_VERSION <= (3,8):
+        NETWORK_MGMT_CLIENT_API_VERSION = None
     if cloud_environment:
         if (config.Cloud.lower() == "stack") and not config.MetadataEndpoint:
                 fail_usage("metadata-endpoint not specified")
